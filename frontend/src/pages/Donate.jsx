@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createDonation, getAllNGOs } from '../services/api';
 import { useNavigate } from 'react-router-dom';
-import { Heart } from 'lucide-react';
+import { Heart, CheckCircle } from 'lucide-react';
 import Select from 'react-select';
 
 export default function Donate() {
@@ -13,6 +13,7 @@ export default function Donate() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const navigate = useNavigate();
 
   const selectedNgo = ngos.find(n => n._id === ngoId);
@@ -53,9 +54,6 @@ export default function Donate() {
   };
 
   const handleDummyPayment = async () => {
-    alert('Payment Successful');
-    setShowPaymentModal(false);
-
     try {
       const dummyPaymentId = 'pay_dummy_' + Date.now();
       const donationResult = await createDonation(
@@ -65,7 +63,20 @@ export default function Donate() {
         ngoId,
         dummyPaymentId
       );
-      navigate('/receipt', { state: { donation: donationResult } });
+      
+      setShowPaymentModal(false);
+      setShowSuccessAnimation(true);
+      
+      setTimeout(() => {
+        setShowSuccessAnimation(false);
+        setAmount('');
+        setCategory('Clothes');
+        setDonationType('ngo');
+        setNgoId(null);
+        setIsSubmitting(false);
+
+        navigate('/receipt', { state: { donation: donationResult } });
+      }, 2000);
     } catch {
       setError('Payment succeeded but failed to save donation. Please contact support.');
       setIsSubmitting(false);
@@ -231,6 +242,19 @@ export default function Donate() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Animation Modal */}
+      {showSuccessAnimation && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-10 flex flex-col items-center justify-center animate-in zoom-in duration-300 max-w-sm w-full">
+            <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mb-6">
+              <CheckCircle className="text-green-500 w-12 h-12" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 text-center mb-2">Payment Successful</h3>
+            <p className="text-gray-500 text-center">Generating your receipt...</p>
           </div>
         </div>
       )}
