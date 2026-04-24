@@ -45,6 +45,12 @@ export default function Receipt() {
             <span className="text-gray-800 font-medium">{new Date(donation.createdAt).toLocaleString()}</span>
           </div>
           <div className="flex justify-between items-center">
+            <span className="text-gray-500">Status</span>
+            <span className="text-green-600 font-medium bg-green-50 px-3 py-1 rounded-full text-sm border border-green-100 flex items-center gap-1">
+              <CheckCircle size={14} /> Completed
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
             <span className="text-gray-500">Destination</span>
             <span className="text-gray-800 font-medium">
               {donation.type === 'general' ? 'General Fund' : (donation.ngoId?.name || 'Unknown NGO')}
@@ -63,7 +69,7 @@ export default function Receipt() {
 
         <div className="mt-8 text-center text-sm text-gray-400">
           <p>This is a computer-generated receipt.</p>
-          <p>GiveHope Charity Platform &bull; support@givehope.org</p>
+          <p>Donate Bridge Platform &bull; support@Donatebridge.org</p>
         </div>
       </div>
     </div>
